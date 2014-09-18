@@ -95,3 +95,5 @@
 
 # 致谢
 感谢您花时间阅读我的简历，期待能有机会和您共事。
+
+[![Analytics](http://ga.rebill.info:8080/UA-5149421-7/github.com/rebill/rebill.github.com?pixel)](https://github.com/rebill/ga-beacon)
