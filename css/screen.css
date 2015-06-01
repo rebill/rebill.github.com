@@ -1,0 +1,108 @@
+* {
+	margin: 0;
+	padding: 0;
+	}
+html {
+	background: #fff url(../images/whirl.jpg) no-repeat 16px 24px;
+	}
+body {
+	border-top: 6px solid #1cacff;
+	border-bottom: 1px solid #fff; /*fix Firefox & Opera's blank space in body bottom, can you have some better solution? Please do tell me, Thanks. */
+	background: transparent url(../images/gear.jpg) no-repeat bottom right;
+	color: #333;
+	font: 1em/1.5 Georgia, "Times New Roman", Times, serif;
+	text-align: center;
+	}
+hr {
+	display: none;
+	}
+a {
+	color: #1cacff;
+	text-decoration: none;
+	}
+a:visited {
+	color: #c71cff;
+	}
+a:hover {
+	text-decoration: underline;
+	}
+a:active {
+	color: #ff1c41;
+	}
+h1 {
+	margin-top: .2em;
+	color: #ffbb1c;
+	font-size: 5em;
+	line-height: 1.2;
+  white-space: nowrap;   
+	}
+h1 .apos {
+	color: #1cacff;
+	}
+h2 {
+	margin-top: 1.5em;
+	color: #0f8c12;
+	font-size: 1.4em;
+	font-weight: normal;
+	font-style: italic;
+	}
+abbr, span.abbr, acronym {
+	border-bottom: 1px dashed #1cacff;
+	cursor: help;
+	}
+ol, ul {
+	list-style-position: outside;
+	margin-left: 2em;
+	}
+li {
+	padding: .3em;
+	}
+.hresume {
+	width: 42em;
+	margin: 24px auto;
+	background: url(../images/bgman.gif) no-repeat 0 96px;
+	text-align: left;
+	}
+div.summary {
+	text-align: right;
+	font-size: 1.5em;
+	}
+.education, .experience, .accreditation {
+	margin-bottom: 1em;
+	}
+.education {
+	overflow: auto;
+	}
+.education, .accreditation {
+	clear: both;
+	}
+.education .htitle {
+	float: left;
+	}
+.education .date_duration {
+	float: right;
+	}
+.experience .htitle {
+	float: left;
+	}
+.experience .date_duration {
+	float: right;
+	}
+.experience .description {
+	clear: both;
+	}
+.tags li {
+	list-style: none;
+	display: inline;
+	margin-right: .5em;
+	}
+.footer {
+	border-top: 1px solid #ccc;
+	margin-top: 2em;
+	padding: 1em;
+	color: #999;
+	font-style: italic;
+	text-align: right;
+	}
+
+.drag {cursor:move;}
