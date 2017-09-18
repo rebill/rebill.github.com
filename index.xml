@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>I&#39;m Rebill</title>
+    <link>http://rebill.github.io/</link>
+    <description>Recent content on I&#39;m Rebill</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 18 Sep 2017 22:11:46 +0800</lastBuildDate>
+    
+	<atom:link href="http://rebill.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hello World</title>
+      <link>http://rebill.github.io/2017/09/hello-world/</link>
+      <pubDate>Mon, 18 Sep 2017 22:11:46 +0800</pubDate>
+      
+      <guid>http://rebill.github.io/2017/09/hello-world/</guid>
+      <description>你好，世界！</description>
+    </item>
+    
+    <item>
+      <title>阮伟标的个人简历</title>
+      <link>http://rebill.github.io/about/</link>
+      <pubDate>Mon, 18 Sep 2017 15:07:46 +0800</pubDate>
+      
+      <guid>http://rebill.github.io/about/</guid>
+      <description> 联系方式  手机：135-6031-9181 Email：rebill@qq.com QQ：195193509  能力概括  熟悉PHP/Go/Python语言编程，有良好的编码风格； 熟悉程序设计和构架，熟悉MySql/MongoDB/Redis的使用； 熟悉Linux系统编程、网络编程，有一定的服务端优化经验； 了解HTTP及TCP/IP网络协议实现； 有海量数据处理经验。  工作经历  2015年2月 ~ 至今 唯品会 高级开发工程师 2014年2月 - 2015年1月 环球市场集团 高级开发工程师 2011年6月 - 2013年12月 格安科技有限公司 高级开发工程师 2009年7月 - 2012年5月 56.com PHP开发工程师  教育背景  2014年3月 - 2017月6月 华南理工大学 软件工程（硕士） 2005年9月 - 2009月7月 华南师范大学 教育技术学（本科）  </description>
+    </item>
+    
+  </channel>
+</rss>
