@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Java 8 Optional 详解 | I&#39;m Rebill | Rebill&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Optional">
+    <meta name="description" content="概述工作中经常会有这样的一个经历： 调用一个方法获得的返回值可能为空，需要进行null判断，然后再做一些相应的业务处理，或者直接抛出NullPointerException。 为了减少这样的null值判断，java官方借鉴Google Guava类库的Optional类，在java8 中引入了一个同样名字的Optional类，官方javadoc描述如下：  IconA container obje">
+<meta name="keywords" content="Java,Optional">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 8 Optional 详解">
+<meta property="og:url" content="https://rebill.github.io/2018/12/26/java-8-optional/index.html">
+<meta property="og:site_name" content="I&#39;m Rebill">
+<meta property="og:description" content="概述工作中经常会有这样的一个经历： 调用一个方法获得的返回值可能为空，需要进行null判断，然后再做一些相应的业务处理，或者直接抛出NullPointerException。 为了减少这样的null值判断，java官方借鉴Google Guava类库的Optional类，在java8 中引入了一个同样名字的Optional类，官方javadoc描述如下：  IconA container obje">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-26T09:38:09.155Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 8 Optional 详解">
+<meta name="twitter:description" content="概述工作中经常会有这样的一个经历： 调用一个方法获得的返回值可能为空，需要进行null判断，然后再做一些相应的业务处理，或者直接抛出NullPointerException。 为了减少这样的null值判断，java官方借鉴Google Guava类库的Optional类，在java8 中引入了一个同样名字的Optional类，官方javadoc描述如下：  IconA container obje">
+    
+        <link rel="alternate" type="application/atom+xml" title="I&#39;m Rebill" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpeg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Rebill.Ruan</h5>
+          <a href="mailto:rebill#qq.com" title="rebill#qq.com" class="mail">rebill#qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about">
+                <i class="icon icon-lg icon-address-card"></i>
+                About Me
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/rebill" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java 8 Optional 详解</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java 8 Optional 详解</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-12-26T09:03:26.000Z" itemprop="datePublished" class="page-time">
+  2018-12-26
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Optional类简介"><span class="post-toc-number">2.</span> <span class="post-toc-text">Optional类简介</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#of"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">of</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ofNullable"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">ofNullable</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#isPresent"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">isPresent</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#get"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">get</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#小试牛刀"><span class="post-toc-number">3.</span> <span class="post-toc-text">小试牛刀</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#更优雅Optional"><span class="post-toc-number">4.</span> <span class="post-toc-text">更优雅Optional</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#更复杂的例子"><span class="post-toc-number">5.</span> <span class="post-toc-text">更复杂的例子</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#更多神奇魅力"><span class="post-toc-number">6.</span> <span class="post-toc-text">更多神奇魅力</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Optional类深入学习"><span class="post-toc-number">7.</span> <span class="post-toc-text">Optional类深入学习</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#orElse"><span class="post-toc-number">7.1.</span> <span class="post-toc-text">orElse</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#orElseGet"><span class="post-toc-number">7.2.</span> <span class="post-toc-text">orElseGet</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#map"><span class="post-toc-number">7.3.</span> <span class="post-toc-text">map</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#更多方法"><span class="post-toc-number">7.4.</span> <span class="post-toc-text">更多方法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">8.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考资料"><span class="post-toc-number">9.</span> <span class="post-toc-text">参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-java-8-optional" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java 8 Optional 详解</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-12-26 17:03:26" datetime="2018-12-26T09:03:26.000Z" itemprop="datePublished">2018-12-26</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>工作中经常会有这样的一个经历：</p>
+<p>调用一个方法获得的返回值可能为空，需要进行null判断，然后再做一些相应的业务处理，或者直接抛出NullPointerException。</p>
+<p>为了减少这样的null值判断，java官方借鉴Google Guava类库的Optional类，在java8 中引入了一个同样名字的Optional类，官方javadoc描述如下：</p>
+<blockquote>
+<p>Icon<br>A container object which may or may not contain a non-null value. If a value is present, isPresent() will return true and get() will return the value.</p>
+</blockquote>
+<p>Optional是 java.util  的一个子类，通过以下方式引入<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Optional;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Optional类简介"><a href="#Optional类简介" class="headerlink" title="Optional类简介"></a>Optional类简介</h2><h3 id="of"><a href="#of" class="headerlink" title="of"></a>of</h3><p><em>为非Null值创建一个Optional</em></p>
+<p>of方法通过工厂方法创建Optional实例，需要注意的是传入的参数不能为null，否则抛出NullPointerException。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 给与一个非空值</span></span><br><span class="line">Optional&lt;String&gt; username = Optional.of(<span class="string">"Unknown"</span>);</span><br><span class="line"><span class="comment">// 传入参数为null，抛出NullPointerException.</span></span><br><span class="line">Optional&lt;String&gt; nullValue = Optional.of(<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="ofNullable"><a href="#ofNullable" class="headerlink" title="ofNullable"></a>ofNullable</h3><p><em>为指定的值创建一个Optional，如果指定的值为null，则返回一个空的Optional。</em></p>
+<p>可为空的Optional</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面创建了一个不包含任何值的Optional实例</span></span><br><span class="line"><span class="comment">// 输出Optional.empty</span></span><br><span class="line">Optional empty = Optional.ofNullable(<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="isPresent"><a href="#isPresent" class="headerlink" title="isPresent"></a>isPresent</h3><p><em>如果值存在返回true,否则返回false</em><br>类似下面的代码:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// isPresent方法用来检查Optional实例中是否包含值</span></span><br><span class="line"><span class="keyword">if</span> (username.isPresent()) &#123;</span><br><span class="line">    <span class="comment">//在Optional实例内调用get()返回已存在的值</span></span><br><span class="line">    System.out.println(username.get());      <span class="comment">//输出：Unknown</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="get"><a href="#get" class="headerlink" title="get"></a>get</h3><p><em>如果Optional有值则将其返回，否则抛出NoSuchElementException。</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 执行下面的代码抛出NoSuchElementException</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="comment">// 在空的Optional实例上调用get()</span></span><br><span class="line">     System.out.println(empty.get());</span><br><span class="line"> &#125; <span class="keyword">catch</span> (NoSuchElementException ex) &#123;</span><br><span class="line">     System.out.println(ex.getMessage());         <span class="comment">// 输出：No value present</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="小试牛刀"><a href="#小试牛刀" class="headerlink" title="小试牛刀"></a>小试牛刀</h2><p>看语法介绍都是很枯燥的，我们来一个生动的例子。</p>
+<p>先来看看在没有Optional之前我们的代码是怎么写的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getName</span><span class="params">(User u)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (u == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Unknown"</span>;</span><br><span class="line">    <span class="keyword">return</span> u.name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有了Optional之后，你可能会把代码改成下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getName</span><span class="params">(User u)</span> </span>&#123;</span><br><span class="line">    Optional&lt;User&gt; user = Optional.ofNullable(u);</span><br><span class="line">    <span class="keyword">if</span> (!user.isPresent())</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Unknown"</span>;</span><br><span class="line">    <span class="keyword">return</span> user.get().name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看上去仍然是在原地踏步，实质上是没有任何分别。</p>
+<h2 id="更优雅Optional"><a href="#更优雅Optional" class="headerlink" title="更优雅Optional"></a>更优雅Optional</h2><p>Let me Show you the code:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getName</span><span class="params">(User u)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.ofNullable(u)</span><br><span class="line">                    .map(user-&gt;user.name)</span><br><span class="line">                    .orElse(<span class="string">"Unknown"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="更复杂的例子"><a href="#更复杂的例子" class="headerlink" title="更复杂的例子"></a>更复杂的例子</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getChampionName</span><span class="params">(Competition comp)</span> <span class="keyword">throws</span> IllegalArgumentException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (comp != <span class="keyword">null</span>) &#123;</span><br><span class="line">        CompResult result = comp.getResult();</span><br><span class="line">        <span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">            User champion = result.getChampion();</span><br><span class="line">            <span class="keyword">if</span> (champion != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> champion.getName();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"The value of param comp isn't available."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于种种原因（比如：比赛还没有产生冠军、方法的非正常调用、某个方法的实现里埋藏的大礼包等等），我们并不能开心的一路comp.getResult().getChampion().getName()到底。</p>
+<p>让我们看看经过Optional加持过后，这些代码会变成什么样子。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getChampionName</span><span class="params">(Competition comp)</span> <span class="keyword">throws</span> IllegalArgumentException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.ofNullable(comp)</span><br><span class="line">            .map(c-&gt;c.getResult())</span><br><span class="line">            .map(r-&gt;r.getChampion())</span><br><span class="line">            .map(u-&gt;u.getName())</span><br><span class="line">            .orElseThrow(()-&gt;<span class="keyword">new</span> IllegalArgumentException(<span class="string">"The value of param comp isn't available."</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Optional给了我们一个真正优雅的Java风格的方法来解决null安全问题。</p>
+<h2 id="更多神奇魅力"><a href="#更多神奇魅力" class="headerlink" title="更多神奇魅力"></a>更多神奇魅力</h2><p>为空则不打印可以这么写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">string.ifPresent(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>检验参数的合法性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> <span class="keyword">throws</span> IllegalArgumentException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = Optional.ofNullable(name).filter(User::isNameValid)</span><br><span class="line">                        .orElseThrow(()-&gt;<span class="keyword">new</span> IllegalArgumentException(<span class="string">"Invalid username."</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Optional类深入学习"><a href="#Optional类深入学习" class="headerlink" title="Optional类深入学习"></a>Optional类深入学习</h2><h3 id="orElse"><a href="#orElse" class="headerlink" title="orElse"></a>orElse</h3><p><em>如果有值则将其返回，否则返回指定的其它值。</em><br>如果Optional实例有值则将其返回，否则返回orElse方法传入的参数。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">whenOrElseWorks_thenCorrect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String nullName = <span class="keyword">null</span>;</span><br><span class="line">    String name = Optional.ofNullable(nullName).orElse(<span class="string">"Unknown"</span>);</span><br><span class="line">    assertEquals(<span class="string">"Unknown"</span>, name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="orElseGet"><a href="#orElseGet" class="headerlink" title="orElseGet"></a>orElseGet</h3><p>orElseGet与orElse方法类似，区别在于得到的默认值。orElse方法将传入的字符串作为默认值，orElseGet方法可以接受Supplier接口的实现用来生成默认值。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">whenOrElseGetWorks_thenCorrect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String nullName = <span class="keyword">null</span>;</span><br><span class="line">    String name = Optional.ofNullable(nullName).orElseGet(() -&gt; <span class="string">"Unknown"</span>);</span><br><span class="line">    assertEquals(<span class="string">"Unknown"</span>, name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p><em>如果有值，则对其执行调用mapping函数得到返回值。如果返回值不为null，则创建包含mapping返回值的Optional作为map方法返回值，否则返回空Optional。</em></p>
+<p>map方法用来对Optional实例的值执行一系列操作。通过一组实现了Function接口的lambda表达式传入操作。map方法示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">givenOptional_whenMapWorks_thenCorrect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    List&lt;String&gt; companyNames = Arrays.asList(</span><br><span class="line">      <span class="string">"paypal"</span>, <span class="string">"oracle"</span>, <span class="string">""</span>, <span class="string">"microsoft"</span>, <span class="string">""</span>, <span class="string">"apple"</span>);</span><br><span class="line">    Optional&lt;List&lt;String&gt;&gt; listOptional = Optional.of(companyNames);</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">int</span> size = listOptional</span><br><span class="line">      .map(List::size)</span><br><span class="line">      .orElse(<span class="number">0</span>);</span><br><span class="line">    assertEquals(<span class="number">6</span>, size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="更多方法"><a href="#更多方法" class="headerlink" title="更多方法"></a>更多方法</h3><ul>
+<li><strong>ifPresent</strong>  如果Optional实例有值则为其调用consumer ,否则不做处理。</li>
+<li><strong>orElseThrow</strong>  如果有值则将其返回，否则抛出supplier接口创建的异常。</li>
+<li><strong>flatMap</strong>  如果有值，为其执行mapping函数返回Optional类型返回值，否则返回空Optional。flatMap与map（Funtion）方法类似，区别在于flatMap中的mapper返回值必须是Optional。调用结束时，flatMap不会对结果用Optional封装。</li>
+<li><strong>filter</strong>  filter个方法通过传入限定条件对Optional实例的值进行过滤。如果有值并且满足断言条件返回包含该值的Optional，否则返回空Optional。</li>
+</ul>
+<p>不再一一介绍。</p>
+<p>JDK 9 又新增了几个API</p>
+<ul>
+<li>the <strong>or()</strong> method for providing a supplier that creates an alternative Optional</li>
+<li>the <strong>ifPresentOrElse()</strong> method that allows executing an action if the Optional is present or another action if not</li>
+<li><strong>stream()</strong> method for converting an Optional to a Stream</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>使用 Optional 时尽量不直接调用 Optional.<strong>get()</strong> 方法，Optional.<strong>isPresent()</strong> 更应该被视为一个私有方法，应依赖于其他像 Optional.<strong>orElse()</strong>、Optional.<strong>orElseGet()</strong>、Optional.<strong>map()</strong> 等这样的方法。</p>
+<p>最好的理解 Java 8 Optional 的方法莫过于看它的源代码 <a href="http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/Optional.java" target="_blank" rel="noopener">java.util.Optional</a>，阅读了源代码才能真真正正的让你解释起来最有底气，Optional 的方法中基本都是内部调用  isPresent() 判断，真时处理值, 假时什么也不做。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://juejin.im/entry/5ae6b732f265da0b7f44548f" target="_blank" rel="noopener">Java8 Optional 详解</a></li>
+<li><a href="http://www.importnew.com/26066.html" target="_blank" rel="noopener">Java8 如何正确使用 Optional</a></li>
+<li><a href="https://www.baeldung.com/java-optional" target="_blank" rel="noopener">Guide To Java 8 Optional</a></li>
+<li><a href="http://www.importnew.com/22060.html" target="_blank" rel="noopener">使用 Java8 Optional 的正确姿势</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-12-26T09:38:09.155Z" itemprop="dateUpdated">2018-12-26 17:38:09</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/2018/12/26/java-8-optional/" target="_blank" rel="external">https://rebill.github.io/2018/12/26/java-8-optional/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://rebill.github.io">
+            <img src="/img/avatar.jpeg" alt="Rebill.Ruan">
+            Rebill.Ruan
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Optional/">Optional</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://rebill.github.io/2018/12/26/java-8-optional/&title=《Java 8 Optional 详解》 — I'm Rebill&pic=https://rebill.github.io/img/avatar.jpeg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://rebill.github.io/2018/12/26/java-8-optional/&title=《Java 8 Optional 详解》 — I'm Rebill&source=Live for love, work for dream." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://rebill.github.io/2018/12/26/java-8-optional/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java 8 Optional 详解》 — I'm Rebill&url=https://rebill.github.io/2018/12/26/java-8-optional/&via=https://rebill.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://rebill.github.io/2018/12/26/java-8-optional/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+
+
+    
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            owner: 'rebill',
+            repo: 'https://github.com/rebill/rebill.github.com.git',
+            oauth: {
+                client_id: 'f99ffa4adf0f731f3afb',
+                client_secret: 'd44025a858765b1eb601962f763348d3777c7943',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        打赏二两银子~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Rebill.Ruan &copy; 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://rebill.github.io/2018/12/26/java-8-optional/&title=《Java 8 Optional 详解》 — I'm Rebill&pic=https://rebill.github.io/img/avatar.jpeg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://rebill.github.io/2018/12/26/java-8-optional/&title=《Java 8 Optional 详解》 — I'm Rebill&source=Live for love, work for dream." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://rebill.github.io/2018/12/26/java-8-optional/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java 8 Optional 详解》 — I'm Rebill&url=https://rebill.github.io/2018/12/26/java-8-optional/&via=https://rebill.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://rebill.github.io/2018/12/26/java-8-optional/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMklEQVR42u3awXLCMAxFUf7/p9OZrlgUc58Upti6XmUoSX2yEJKsxwOv63etr58/eV7p017ddcOSIUPGtoxrucjWydPIptefvHlBMmTIGMAgYTEFdHh8bzJkyJBx1zUJmmueDBkyZNQC7vpelNJ9w++GDBkyNmGQ1I38tZ9KfrwWlyFDxoaMuw4GPnH9D+cbMmTI+DLGFa5asVr7ZrArGTJkHM1YD0z0IxtpqJF2GwrHMmTIOJSxBvAASu7lSSd/rTJkyJjGSJM5XuiSl1KrWGXIkDGNkf4zkgLeNXb25psyZMg4mtFJ0Ug4Jq20ILD200QZMmRsyOANslrTjby/tMX2x7UMGTIGMEgbLi1WyUbTE4yXd8mQIWMMgxw6pkeVvNxtHW3KkCHjaEatNRZUxo2gzMtmGTJknM3gaRxv3Kfts37qKUOGjAmMdHiifxc/PAiKWBkyZBzKIMVkbQwiPTCoFcMyZMiYxkhHHPi4WG38opWSypAh4zhGrfVPeP1m3A3DYTJkyNicURsFSwFpopm+CBkyZExgpClamjimAxxpoilDhoyzGbVkrnaEyUtT/vMgQ4aMCYwrXDwTS5NFTpUhQ8Y0Riekrh9BDgNqxbAMGTJmMtIgyxtzwXhEKX2UIUPGNEY/aKZjFp1S+eVJrAwZMsYzeBkZzHqAUBvMjMiQIUNGaeahv0XU4JMhQ8YARprY1QpU3v9LDwxkyJBxNqNzMFArdGvtuRtKYhkyZOzH+AEFyBkGOOzphAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
